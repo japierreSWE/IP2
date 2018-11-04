@@ -1,5 +1,7 @@
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -10,6 +12,7 @@ import javax.swing.GroupLayout.Alignment;
 import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.border.LineBorder;
 import java.awt.Color;
+import java.awt.Label;
 
 public class Application extends JFrame {
 
@@ -17,6 +20,10 @@ public class Application extends JFrame {
 	PuzzleDrawer pd;
 	JLabel label;
 	Model model;
+	/**
+	 * @wbp.nonvisual location=181,277
+	 */
+	private final JLabel congratulations = new JLabel("New label");
 	
 	/**
 	 * Create the frame.
@@ -26,14 +33,31 @@ public class Application extends JFrame {
 		setTitle("Block Puzzle");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 426, 620);
-		cd = new ContentsDrawer(this);
+		pd = new PuzzleDrawer(m, this);
+		label = new JLabel("New label");
+		cd = new ContentsDrawer(this, m);
 		cd.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(cd);
 		
-		pd = new PuzzleDrawer();
+		
 		pd.setBorder(new LineBorder(new Color(0, 0, 0)));
 		
-		label = new JLabel("New label");
+		this.addKeyListener(new KeyAdapter() {
+			
+			public void keyPressed(KeyEvent e) {
+				new MovePieceController(Application.this, model).move(e);
+			}
+			
+		});
+		
+		this.addKeyListener(new KeyAdapter() {
+			
+			public void keyPressed(KeyEvent e) {
+				new ResetController(Application.this, model).reset(e);
+			}
+			
+		});
+		
 		GroupLayout gl_contentPane = new GroupLayout(cd);
 		gl_contentPane.setHorizontalGroup(
 			gl_contentPane.createParallelGroup(Alignment.LEADING)
@@ -69,6 +93,10 @@ public class Application extends JFrame {
 	 */
 	public JLabel getLabel() {
 		return label;
+	}
+	
+	public JLabel getCongrats() {
+		return congratulations;
 	}
 	
 	/**
